@@ -1,6 +1,6 @@
 from rest_framework import serializers
-
-from .models import Category, OrderItems, Order, Pet
+from drf_writable_nested.serializers import WritableNestedModelSerializer
+from .models import OrderItems, Order
 
 
 class CategorySerializer(serializers.Serializer):
@@ -19,6 +19,8 @@ class PetSerializer(serializers.Serializer):
 
 
 class OrderItemsSerializer(serializers.ModelSerializer):
+    total_item_price = serializers.FloatField(read_only=True)
+
     class Meta:
         model = OrderItems
         fields = "__all__"
@@ -26,6 +28,7 @@ class OrderItemsSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     order_items = OrderItemsSerializer(many=True, read_only=True)
+    total_price = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Order

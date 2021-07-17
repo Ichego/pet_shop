@@ -2,15 +2,17 @@
 Apis for all project from showing products (Pets)
 to Buying (Creating Order)
 """
+from django.db import transaction
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import status
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-
-from .models import Category, Pet
-from .serializers import CategorySerializer, PetSerializer
+from .models import Category, Pet, Order
+from .serializers import CategorySerializer, PetSerializer, OrderSerializer
 
 
 class CategoryApi(GenericViewSet, ListAPIView, RetrieveAPIView):
@@ -54,3 +56,34 @@ class PetApi(GenericViewSet, ListAPIView, RetrieveAPIView):
     @method_decorator(cache_page(60 * 60))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
+
+
+class OrderApi(GenericViewSet, ListAPIView, RetrieveAPIView):
+    """
+    This Api for getting, retrieving, and creating order.
+    """
+
+    serializer_class = OrderSerializer
+
+    def post(self, request):
+        """
+        post function for creating new orders
+        """
+        # atomic to rollback if sth failed inside add items function
+        with transaction.atomic():
+            data = request.data.copy()
+            items_data = data.pop("order_items")
+            serializer = OrderSerializer(data=data)
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+            order = Order.objects.get(pk=serializer.data.get("id"))
+            try:
+                order.add_items(items_data)
+            except ValidationError:
+                transaction.set_rollback(True)
+                return Response(
+                    {"detail": "Not Enough Pets"},
+                    status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                )
+
+        return Response(OrderSerializer(order).data)
