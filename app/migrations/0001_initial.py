@@ -10,53 +10,118 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-    ]
+    dependencies = [migrations.swappable_dependency(settings.AUTH_USER_MODEL)]
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('breed_name', models.CharField(max_length=50, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("breed_name", models.CharField(max_length=50, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Order',
+            name="Order",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('address_one', models.CharField(max_length=255)),
-                ('address_two', models.CharField(default='', max_length=255)),
-                ('phone_number', phonenumber_field.modelfields.PhoneNumberField(max_length=128, region=None)),
-                ('email', models.EmailField(max_length=254)),
-                ('currency', models.CharField(default='USD', max_length=50)),
-                ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='user_orders', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("address_one", models.CharField(max_length=255)),
+                ("address_two", models.CharField(default="", max_length=255)),
+                (
+                    "phone_number",
+                    phonenumber_field.modelfields.PhoneNumberField(
+                        max_length=128, region=None
+                    ),
+                ),
+                ("email", models.EmailField(max_length=254)),
+                ("currency", models.CharField(default="USD", max_length=50)),
+                (
+                    "customer",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="user_orders",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Pet',
+            name="Pet",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, unique=True)),
-                ('born_date', models.DateField()),
-                ('price', models.FloatField(default=100)),
-                ('quantity', models.IntegerField(default=1)),
-                ('gender', models.CharField(choices=[('F', 'F'), ('M', 'M')], max_length=5)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='category_pets', to='app.category')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, unique=True)),
+                ("born_date", models.DateField()),
+                ("price", models.FloatField(default=100)),
+                ("quantity", models.IntegerField(default=1)),
+                (
+                    "gender",
+                    models.CharField(choices=[("F", "F"), ("M", "M")], max_length=5),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="category_pets",
+                        to="app.category",
+                    ),
+                ),
             ],
-            options={
-                'ordering': ['-born_date'],
-            },
+            options={"ordering": ["-born_date"]},
         ),
         migrations.CreateModel(
-            name='OrderItems',
+            name="OrderItems",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price', models.FloatField()),
-                ('quantity', models.IntegerField()),
-                ('dog', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='user_orders', to='app.pet')),
-                ('order', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='order_items', to='app.order')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("price", models.FloatField()),
+                ("quantity", models.IntegerField()),
+                (
+                    "dog",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="user_orders",
+                        to="app.pet",
+                    ),
+                ),
+                (
+                    "order",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="order_items",
+                        to="app.order",
+                    ),
+                ),
             ],
         ),
     ]
