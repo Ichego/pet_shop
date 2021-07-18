@@ -1,0 +1,21 @@
+[
+  {
+    "model": "app.category",
+    "pk": 1,
+    "fields": {
+      "breed_name": "PolDog"
+    }
+  },
+  {
+    "model": "app.pet",
+    "pk": 1,
+    "fields": {
+      "category": 1,
+      "name": "test",
+      "born_date": "2021-07-16",
+      "price": 100.0,
+      "quantity": 1,
+      "gender": "1"
+    }
+  }
+]
