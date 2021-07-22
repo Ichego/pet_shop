@@ -8,6 +8,7 @@
 - pip install -r requirements.txt
 - pre-commit install
 - ./manage.py migrate
+- ./manage.py runserver
 ```
 
 ### - To Have Data On your website you can do 2 things :
