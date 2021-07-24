@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=pet_shop_dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pet_shop_v1
+  web:
+    build: .
+    command: gunicorn pet_shop.wsgi:application --reload --bind 0.0.0.0:8000
+    volumes:
+      - ./pet_shop/:/src/pet_shop
+    env_file:
+      - ./.env.dev
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
